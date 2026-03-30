@@ -8,7 +8,7 @@
 }
 
 body {
-  background: #0a0a0a;
+  background: #050510;
   color: #ffffff;
 }
 
@@ -37,10 +37,10 @@ body {
 @keyframes ring-expand {
   0% {
     transform: scale(0.8);
-    opacity: 0.6;
+    opacity: 0.5;
   }
   100% {
-    transform: scale(1.8);
+    transform: scale(2);
     opacity: 0;
   }
 }
@@ -55,4 +55,11 @@ body {
 
 .ring-expand {
   animation: ring-expand 2.5s ease-out infinite;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #ffffff, #00D4FF, #00D4FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

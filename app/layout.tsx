@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
-      <body className="min-h-screen bg-[#0a0a0a] text-white font-[var(--font-inter)]">
+      <body className="min-h-screen bg-[#050510] text-white font-[var(--font-inter)]">
         {children}
       </body>
     </html>

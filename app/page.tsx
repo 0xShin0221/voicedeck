@@ -2,6 +2,17 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
+import NowPlayingQueue from "@/components/NowPlayingQueue";
+
+const EarphoneHero = dynamic(() => import("@/components/EarphoneHero"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-[340px] h-[400px] sm:w-[400px] sm:h-[480px] flex items-center justify-center">
+      <div className="w-48 h-48 rounded-full bg-[#00D4FF]/10 blur-[60px] animate-pulse" />
+    </div>
+  ),
+});
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -12,78 +23,6 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.15 } },
 };
 
-function WaveBars() {
-  return (
-    <div className="flex items-center gap-[3px] h-12">
-      {[0, 0.2, 0.4, 0.1, 0.3, 0.5, 0.15, 0.35].map((delay, i) => (
-        <div
-          key={i}
-          className="w-[3px] h-full bg-[#00D4FF] rounded-full wave-bar origin-bottom"
-          style={{ animationDelay: `${delay}s`, opacity: 0.5 + Math.random() * 0.5 }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function EarphoneGlow() {
-  return (
-    <div className="relative flex items-center justify-center my-12">
-      {/* Expanding rings */}
-      {[0, 0.8, 1.6].map((delay, i) => (
-        <div
-          key={i}
-          className="absolute w-40 h-40 rounded-full border border-[#00D4FF]/30 ring-expand"
-          style={{ animationDelay: `${delay}s` }}
-        />
-      ))}
-      {/* Earphone emoji */}
-      <div className="relative z-10 text-8xl glow-pulse rounded-full p-6">
-        🎧
-      </div>
-      {/* Wave bars on sides */}
-      <div className="absolute left-1/2 -translate-x-[120px] top-1/2 -translate-y-1/2">
-        <WaveBars />
-      </div>
-      <div className="absolute left-1/2 translate-x-[80px] top-1/2 -translate-y-1/2">
-        <WaveBars />
-      </div>
-    </div>
-  );
-}
-
-function QueuePreview() {
-  const items = [
-    { name: "Ace", color: "#3B82F6", msg: "PR #42 is ready for review", active: true },
-    { name: "Mia", color: "#EC4899", msg: "Draft ready", active: false },
-    { name: "Rex", color: "#10B981", msg: "Data pulled", active: false },
-  ];
-
-  return (
-    <motion.div
-      variants={fadeUp}
-      className="w-full max-w-sm mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 space-y-3"
-    >
-      {items.map((item) => (
-        <div key={item.name} className="flex items-center gap-3">
-          <div
-            className={`w-3 h-3 rounded-full ${item.active ? "" : "border-2"}`}
-            style={{
-              backgroundColor: item.active ? item.color : "transparent",
-              borderColor: item.active ? undefined : item.color,
-              boxShadow: item.active ? `0 0 8px ${item.color}` : undefined,
-            }}
-          />
-          <span className="text-sm font-medium" style={{ color: item.color }}>
-            {item.name}
-          </span>
-          <span className="text-sm text-zinc-400">&quot;{item.msg}&quot;</span>
-        </div>
-      ))}
-    </motion.div>
-  );
-}
-
 function EmailForm() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -93,9 +32,9 @@ function EmailForm() {
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-[#00D4FF] text-center"
+        className="text-[#00D4FF] font-medium"
       >
-        You&apos;re on the list. We&apos;ll reach out when your spot opens.
+        You&apos;re on the list &#10003;
       </motion.p>
     );
   }
@@ -106,7 +45,7 @@ function EmailForm() {
         e.preventDefault();
         if (email) setSubmitted(true);
       }}
-      className="flex flex-col sm:flex-row gap-3 w-full max-w-md mx-auto"
+      className="flex flex-col sm:flex-row gap-3 w-full max-w-md"
     >
       <input
         type="email"
@@ -114,11 +53,11 @@ function EmailForm() {
         placeholder="your@email.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#00D4FF]/50 focus:ring-1 focus:ring-[#00D4FF]/30 transition-colors"
+        className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#00D4FF]/40 focus:ring-1 focus:ring-[#00D4FF]/20 transition-colors text-sm"
       />
       <button
         type="submit"
-        className="px-6 py-3 bg-[#00D4FF] text-black font-semibold rounded-xl hover:bg-[#00D4FF]/90 transition-colors cursor-pointer whitespace-nowrap"
+        className="px-6 py-3 bg-[#00D4FF] text-[#050510] font-semibold rounded-xl hover:bg-[#00D4FF]/90 transition-colors cursor-pointer whitespace-nowrap text-sm"
       >
         Request access &rarr;
       </button>
@@ -130,10 +69,10 @@ function PainCard({ title, desc }: { title: string; desc: string }) {
   return (
     <motion.div
       variants={fadeUp}
-      className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center"
+      className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 text-center"
     >
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-zinc-400 text-sm">{desc}</p>
+      <p className="text-zinc-400 text-sm leading-relaxed">{desc}</p>
     </motion.div>
   );
 }
@@ -141,11 +80,11 @@ function PainCard({ title, desc }: { title: string; desc: string }) {
 function StepCard({ num, title, desc }: { num: string; title: string; desc: string }) {
   return (
     <motion.div variants={fadeUp} className="text-center">
-      <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#00D4FF]/10 border border-[#00D4FF]/30 flex items-center justify-center text-[#00D4FF] font-bold text-lg">
+      <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#00D4FF]/[0.08] border border-[#00D4FF]/20 flex items-center justify-center text-[#00D4FF] font-bold text-lg">
         {num}
       </div>
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-zinc-400 text-sm">{desc}</p>
+      <p className="text-zinc-400 text-sm leading-relaxed">{desc}</p>
     </motion.div>
   );
 }
@@ -154,10 +93,10 @@ function QuoteCard({ quote, author }: { quote: string; author: string }) {
   return (
     <motion.div
       variants={fadeUp}
-      className="bg-white/5 border border-white/10 rounded-2xl p-6"
+      className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6"
     >
-      <p className="text-zinc-300 text-sm italic mb-4">&quot;{quote}&quot;</p>
-      <p className="text-zinc-500 text-xs">{author}</p>
+      <p className="text-zinc-300 text-sm italic mb-4 leading-relaxed">&ldquo;{quote}&rdquo;</p>
+      <p className="text-zinc-600 text-xs">{author}</p>
     </motion.div>
   );
 }
@@ -165,190 +104,218 @@ function QuoteCard({ quote, author }: { quote: string; author: string }) {
 export default function Home() {
   return (
     <main className="overflow-x-hidden">
-      {/* ── HERO ── */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center">
+      {/* ── SECTION 1: HERO ── */}
+      <section className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden bg-[#050510]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,212,255,0.05)_0%,_transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,_rgba(124,58,237,0.03)_0%,_transparent_50%)]" />
+
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="flex flex-col items-center"
+          className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-16 max-w-6xl w-full"
         >
+          {/* Left: Text */}
+          <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+            <motion.div
+              variants={fadeUp}
+              className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-full text-xs text-zinc-400"
+            >
+              &#x1F512; Closed beta &middot; 47 people on the waitlist
+            </motion.div>
+
+            <motion.h1
+              variants={fadeUp}
+              className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6"
+            >
+              Your agents are talking.
+              <br />
+              <span className="gradient-text">Hear them.</span>
+            </motion.h1>
+
+            <motion.p variants={fadeUp} className="text-lg text-zinc-400 max-w-lg mb-10 leading-relaxed">
+              Queue AI agent replies. Listen hands-free. Reply by voice.
+            </motion.p>
+
+            <motion.div variants={fadeUp} className="w-full max-w-md mb-10">
+              <EmailForm />
+            </motion.div>
+          </div>
+
+          {/* Right: 3D Earphone + Now Playing */}
           <motion.div
             variants={fadeUp}
-            className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 bg-white/5 border border-white/10 rounded-full text-sm text-zinc-400"
+            className="flex-shrink-0 flex flex-col items-center gap-4"
           >
-            🔒 Closed beta · 47 people on the waitlist
-          </motion.div>
-
-          <motion.h1
-            variants={fadeUp}
-            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 max-w-3xl"
-          >
-            Your agents are talking.{" "}
-            <span className="text-[#00D4FF]">Hear them.</span>
-          </motion.h1>
-
-          <motion.p variants={fadeUp} className="text-lg sm:text-xl text-zinc-400 max-w-xl mb-8">
-            Queue AI agent replies. Listen hands-free. Reply by voice.
-          </motion.p>
-
-          <EarphoneGlow />
-
-          <QueuePreview />
-
-          <motion.div variants={fadeUp} className="mt-10 w-full max-w-md">
-            <EmailForm />
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-72 h-72 rounded-full bg-[#00D4FF]/10 blur-[100px]" />
+              </div>
+              <EarphoneHero />
+            </div>
+            <NowPlayingQueue />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── PAIN ── */}
-      <section className="px-6 py-24 max-w-4xl mx-auto">
+      {/* ── SECTION 2: PAIN ── */}
+      <section className="px-6 py-24 bg-[#0a0a0f]">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={stagger}
-          className="text-center"
+          className="max-w-4xl mx-auto text-center"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4 max-w-2xl mx-auto">
-            You built the perfect agent team.{" "}
-            <span className="text-zinc-500">Then became their secretary.</span>
+          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-3">
+            You built the perfect agent team.
           </motion.h2>
-          <motion.div variants={stagger} className="grid md:grid-cols-3 gap-6 mt-12">
+          <motion.p variants={fadeUp} className="text-xl text-zinc-500 mb-12">
+            Then became their secretary.
+          </motion.p>
+          <motion.div variants={stagger} className="grid md:grid-cols-3 gap-6">
             <PainCard
-              title="Screen switching"
-              desc="Alt-tabbing between 5 agent windows. Copy-pasting context. Losing your flow every 30 seconds."
+              title="Constant screen switching"
+              desc="Switching between 5 Discord channels, copy-pasting context, losing flow every 30 seconds."
             />
             <PainCard
               title="Missed replies"
-              desc="Your agent finished 10 minutes ago. You didn't notice. Now the whole pipeline is stalled."
+              desc="Agents waiting while you're on a call. By the time you check, the whole pipeline is stalled."
             />
             <PainCard
-              title="Zero hands-free"
-              desc="Walking, driving, cooking — your agents keep working but you can't. Everything waits until you sit down."
+              title="Never hands-free"
+              desc="Can't check while driving, walking, building. Everything waits until you sit back down."
             />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="px-6 py-24 max-w-4xl mx-auto">
+      {/* ── SECTION 3: HOW IT WORKS ── */}
+      <section className="px-6 py-24 bg-[#050510]">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={stagger}
-          className="text-center"
+          className="max-w-4xl mx-auto text-center"
         >
           <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-12">
-            How it works
+            Up and running in 3 minutes.
           </motion.h2>
           <motion.div variants={stagger} className="grid md:grid-cols-3 gap-12">
             <StepCard
               num="1"
-              title="Connect"
-              desc="Link your AI agents — OpenClaw, Discord bots, custom APIs. One-click integration."
+              title="Connect your agents"
+              desc="OpenClaw, Claude Code, or any Discord-based setup."
             />
             <StepCard
               num="2"
-              title="Pair"
-              desc="Connect your Bluetooth earphones. VoiceDeck routes all agent messages to your audio queue."
+              title="Pair your earbuds"
+              desc="Any Bluetooth device. No new hardware needed."
             />
             <StepCard
               num="3"
-              title="Listen & Reply"
-              desc="Hear messages one by one. Tap to skip. Hold to reply by voice. Fully hands-free."
+              title="Start listening"
+              desc="Your queue builds itself. You just reply."
             />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── FOR YOU ── */}
-      <section className="px-6 py-24 max-w-2xl mx-auto">
+      {/* ── SECTION 4: FOR YOU ── */}
+      <section className="px-6 py-24 bg-[#0a0a0f]">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={stagger}
-          className="text-center"
+          className="max-w-2xl mx-auto text-center"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
-            Is this for you?
-          </motion.h2>
-          <motion.p variants={fadeUp} className="text-zinc-500 mb-10">
+          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-10">
             Built for serious agent users only.
-          </motion.p>
-          <motion.div variants={stagger} className="space-y-4 text-left max-w-sm mx-auto">
+          </motion.h2>
+          <motion.div variants={stagger} className="space-y-4 text-left max-w-md mx-auto">
             {[
-              "You run 3+ AI agents",
-              "You use OpenClaw or Discord bots",
-              "You want hands-free agent control",
-              "You're tired of being your agents' secretary",
+              "Running 3+ AI agents in parallel",
+              "OpenClaw / Claude Code user",
+              "Constantly switching channels to check replies",
+              "Wishing you could delegate while your hands are busy",
             ].map((item) => (
               <motion.div key={item} variants={fadeUp} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-md bg-[#00D4FF]/10 border border-[#00D4FF]/40 flex items-center justify-center flex-shrink-0">
+                <div className="w-5 h-5 rounded-md bg-[#00D4FF]/[0.08] border border-[#00D4FF]/30 flex items-center justify-center flex-shrink-0">
                   <svg className="w-3 h-3 text-[#00D4FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-zinc-300">{item}</span>
+                <span className="text-zinc-300 text-sm">{item}</span>
               </motion.div>
             ))}
           </motion.div>
+          <motion.p variants={fadeUp} className="mt-10 text-zinc-500 text-sm italic max-w-md mx-auto">
+            If you&apos;ve said &ldquo;I&apos;m literally just routing tasks manually&rdquo; — yes, this is for you.
+          </motion.p>
         </motion.div>
       </section>
 
-      {/* ── SOCIAL PROOF ── */}
-      <section className="px-6 py-24 max-w-4xl mx-auto">
+      {/* ── SECTION 5: SOCIAL PROOF ── */}
+      <section className="px-6 py-24 bg-[#050510]">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={stagger}
+          className="max-w-4xl mx-auto"
         >
           <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-12 text-center">
-            The pain is real
+            You&apos;re not alone.
           </motion.h2>
           <motion.div variants={stagger} className="grid md:grid-cols-3 gap-6">
             <QuoteCard
-              quote="I have 4 agents running and I spend half my day just checking if any of them finished. It's like babysitting."
-              author="u/agent_overload · r/AIAgents"
+              quote="Lots of frameworks are solving agent-to-agent coordination, but the human-to-agents interface feels completely unsolved."
+              author="r/AI_Agents"
             />
             <QuoteCard
-              quote="The irony of AI automation is that I now spend more time managing my agents than doing actual work."
-              author="u/devops_tired · r/ChatGPT"
+              quote="I hit a wall around 4 concurrent agents. Terminals everywhere and no idea which needs my attention."
+              author="r/ClaudeAI"
             />
             <QuoteCard
-              quote="Needed something hands-free for months. I walk my dog and miss half the agent outputs. By the time I'm back everything's stale."
-              author="u/walkbot · r/OpenClaw"
+              quote="Would pay for a proper UI that lets me voice-command my whole agent stack."
+              author="r/LocalLLaMA"
             />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ── CTA / FOOTER ── */}
-      <section className="px-6 py-24 max-w-2xl mx-auto text-center">
+      {/* ── SECTION 6: FINAL CTA ── */}
+      <section className="px-6 py-24 bg-gradient-to-b from-[#050510] via-[#080818] to-[#050510]">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={stagger}
+          className="max-w-2xl mx-auto text-center"
         >
           <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
-            Request early access
+            Stop being the router.
           </motion.h2>
           <motion.p variants={fadeUp} className="text-zinc-500 mb-8">
             Currently invite-only. Built for teams running 3+ AI agents.
           </motion.p>
-          <motion.div variants={fadeUp}>
+          <motion.div variants={fadeUp} className="flex justify-center mb-6">
             <EmailForm />
           </motion.div>
+          <motion.p variants={fadeUp} className="text-zinc-600 text-xs">
+            Free during beta. Works with OpenClaw out of the box.
+          </motion.p>
         </motion.div>
       </section>
 
-      <footer className="border-t border-white/5 py-8 text-center text-zinc-600 text-sm">
-        VoiceDeck &copy; {new Date().getFullYear()}
+      {/* ── SECTION 7: FOOTER ── */}
+      <footer className="border-t border-white/[0.04] py-8 px-6">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-700 text-sm">
+          <span className="font-medium text-zinc-500">VoiceDeck</span>
+          <span>&copy; 2026 DigDaTech LLC</span>
+        </div>
       </footer>
     </main>
   );
