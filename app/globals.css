@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-cyan-glow: #00D4FF;
+  --color-ace: #3B82F6;
+  --color-mia: #EC4899;
+  --color-rex: #10B981;
+}
+
+body {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3),
+      0 0 60px rgba(0, 212, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.6),
+      0 0 100px rgba(0, 212, 255, 0.2);
+  }
+}
+
+@keyframes wave-bar {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes ring-expand {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.wave-bar {
+  animation: wave-bar 1.2s ease-in-out infinite;
+}
+
+.ring-expand {
+  animation: ring-expand 2.5s ease-out infinite;
+}
